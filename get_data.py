@@ -1,8 +1,9 @@
 import requests
 import pickle
 from pathlib import Path
-
 import collections
+
+from tqdm import tqdm
 
 from api_requests import AUTH_TOKEN
 
@@ -59,7 +60,7 @@ neurons_with_annotations = neurons_with_annotations.json()["entities"]
 # cell_num -> [(object_id, annotations, name, annotation_list)]
 cells = collections.defaultdict(list)
 
-for neuron in neurons_with_annotations:
+for neuron in tqdm(neurons_with_annotations, desc="Getting cells: "):
     name = neuron["name"]
     object_id = neuron["skeleton_ids"]
     assert len(object_id) == 1
@@ -85,7 +86,7 @@ for neuron in neurons_with_annotations:
     cells[cell_num].append((object_id, annotations, name))
 
 rows = []
-for cell_num, objects in cells.items():
+for cell_num, objects in tqdm(cells.items(), desc="Fetching cell stats: "):
     cell = [None] * len(columns)
     for i, (k, v) in enumerate(columns):
         cell[i] = v(objects, cell_num)
@@ -93,7 +94,7 @@ for cell_num, objects in cells.items():
 
 with open("cell_data.csv", "w") as f:
     f.write(",".join([k for k, v in columns]) + "\n")
-    for row in rows:
+    for row in tqdm(rows, "Writing to file: "):
         f.write(",".join([str(x) for x in row]) + "\n")
 
 print("Cell data has been written to 'cell_data.csv'")
