@@ -5,7 +5,7 @@ import collections
 
 from tqdm import tqdm
 
-from api_requests import AUTH_TOKEN
+from api_requests import AUTH_TOKEN, CATMAID_URL, PROJECT_ID
 
 from cell_stats import (
     get_cell,
@@ -46,7 +46,7 @@ all_annotations = set()
 
 
 neurons_with_annotations = requests.post(
-    "https://jls.janelia.org/catmaid/49/annotations/query-targets",
+    f"{CATMAID_URL}/{PROJECT_ID}/annotations/query-targets",
     verify=False,
     auth=AUTH_TOKEN,
     headers={"content-type": "application/x-www-form-urlencoded; charset=UTF-8"},

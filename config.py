@@ -1,3 +1,5 @@
+catmaid_url = "your_catmaid_base_url"
+project_id = "your project_id"
 token = "your_token"
 username = "your_username"
 password = "your_password"

@@ -21,3 +21,12 @@ class CatmaidApiTokenAuth(HTTPBasicAuth):
 
 
 AUTH_TOKEN = CatmaidApiTokenAuth(config.token, config.username, config.password)
+CATMAID_URL = config.catmaid_url
+
+if CATMAID_URL.endswith('#'):
+    CATMAID_URL = CATMAID_URL[:-1]
+
+if CATMAID_URL.endswith('/'):
+    CATMAID_URL = CATMAID_URL[:-1]
+
+PROJECT_ID = int(config.project_id)

@@ -5,7 +5,7 @@ import requests
 import warnings
 import logging
 
-from api_requests import AUTH_TOKEN
+from api_requests import AUTH_TOKEN, CATMAID_URL, PROJECT_ID
 
 logger = logging.getLogger(__name__)
 
@@ -93,13 +93,13 @@ def get_distance_a(cell_objects, cell):
         return np.nan
 
     mother_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
     ).json()
     daughter_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{daughter_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{daughter_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -120,7 +120,7 @@ def get_centriole_coords(cell_objects, cell):
             centriole_id = object_id
 
             centriole_skeleton = requests.post(
-                f"https://jls.janelia.org/catmaid/49/{centriole_id}/0/1/compact-skeleton",
+                f"{CATMAID_URL}/{PROJECT_ID}/{centriole_id}/0/1/compact-skeleton",
                 verify=False,
                 auth=AUTH_TOKEN,
                 data="",
@@ -148,7 +148,7 @@ def get_depth_a(cell_objects, cell):
         return np.nan
 
     mother_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -180,13 +180,13 @@ def get_distance_b(cell_objects, cell):
         return np.nan
 
     mother_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
     ).json()
     daughter_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{daughter_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{daughter_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -211,7 +211,7 @@ def get_depth_b(cell_objects, cell):
         return np.nan
 
     mother_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -240,13 +240,13 @@ def get_distance_ab(cell_objects, cell):
         return np.nan
 
     mother_skeleton_a = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id_a}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id_a}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
     ).json()
     mother_skeleton_b = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id_b}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id_b}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -264,7 +264,7 @@ def get_cilia_length(cell_objects, cell):
         if "cilium" in annotations:
             assert cilia_length == 0
             skeleton = requests.post(
-                f"https://jls.janelia.org/catmaid/49/{object_id}/0/1/compact-skeleton",
+                f"{CATMAID_URL}/{PROJECT_ID}/{object_id}/0/1/compact-skeleton",
                 verify=False,
                 auth=AUTH_TOKEN,
                 data="",
