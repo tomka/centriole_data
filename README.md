@@ -31,10 +31,7 @@ conda activate centrioles
 
 ## 3) Install dependencies
 ```
-pip install tqdm
-pip install networkx
-pip install numpy
-pip install requests
+pip install -r requirements.txt
 ```
 
 ## 4) Run the script

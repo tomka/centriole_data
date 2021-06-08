@@ -1,0 +1,4 @@
+tqdm
+networkx
+numpy
+requests
