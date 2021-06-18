@@ -8,7 +8,7 @@ First replace `catmaid_url`, `project_id`, `api_token`, `username`, and
 
 Note that the `catmaid_url` should be a fully qualified URL, including the
 protocol and a possible sub-directory, e.g.
-"https://spaces.itanna.io/catmaid/itanna/".
+`"https://spaces.itanna.io/catmaid/itanna/"`.
 
 The `project_id` is an integer number that can be found by opening the
 respective project in CATMAID and create a URL to the current view with the link
