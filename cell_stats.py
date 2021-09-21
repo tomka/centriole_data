@@ -5,13 +5,14 @@ import requests
 import warnings
 import logging
 
-from api_requests import AUTH_TOKEN
+from api_requests import AUTH_TOKEN, CATMAID_URL, PROJECT_ID
 
 logger = logging.getLogger(__name__)
 
 warnings.filterwarnings("ignore")
 
-all_annotations = [
+# Store a *lower case* version of all annotations
+all_annotations = list(map(lambda a: a.lower(), [
     # locations
     "ML",
     "PCL",
@@ -50,7 +51,12 @@ all_annotations = [
     # other
     "bipolar",
     "midbody",
-]
+]))
+
+
+def normann(a):
+    """Normalize an annotation by converting it to lower case."""
+    return a.lower()
 
 
 def get_cell(cell_objects, cell):
@@ -69,16 +75,16 @@ def get_distance_a(cell_objects, cell):
     daughter_id = None
     for (object_id, annotations, name) in cell_objects:
         if (
-            "Mother Centriole" in annotations
-            and "B" not in annotations
-            and "B" not in name
+            "mother centriole" in annotations
+            and "b" not in annotations
+            and "b" not in name
         ):
             assert mother_id is None
             mother_id = object_id
         elif (
-            "Daughter Centriole" in annotations
-            and "B" not in annotations
-            and "B" not in name
+            "daughter centriole" in annotations
+            and "b" not in annotations
+            and "b" not in name
         ):
             assert (
                 daughter_id is None
@@ -93,13 +99,13 @@ def get_distance_a(cell_objects, cell):
         return np.nan
 
     mother_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
     ).json()
     daughter_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{daughter_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{daughter_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -120,7 +126,7 @@ def get_centriole_coords(cell_objects, cell):
             centriole_id = object_id
 
             centriole_skeleton = requests.post(
-                f"https://jls.janelia.org/catmaid/49/{centriole_id}/0/1/compact-skeleton",
+                f"{CATMAID_URL}/{PROJECT_ID}/{centriole_id}/0/1/compact-skeleton",
                 verify=False,
                 auth=AUTH_TOKEN,
                 data="",
@@ -136,9 +142,9 @@ def get_depth_a(cell_objects, cell):
     mother_id = None
     for (object_id, annotations, name) in cell_objects:
         if (
-            "Mother Centriole" in annotations
-            and "B" not in annotations
-            and "B" not in name
+            "mother centriole" in annotations
+            and "b" not in annotations
+            and "b" not in name
         ):
             assert mother_id is None
             mother_id = object_id
@@ -148,7 +154,7 @@ def get_depth_a(cell_objects, cell):
         return np.nan
 
     mother_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -162,11 +168,11 @@ def get_distance_b(cell_objects, cell):
     mother_id = None
     daughter_id = None
     for (object_id, annotations, name) in cell_objects:
-        if "Mother Centriole" in annotations and ("B" in annotations or "B" in name):
+        if "mother centriole" in annotations and ("b" in annotations or "b" in name):
             assert mother_id is None
             mother_id = object_id
-        elif "Daughter Centriole" in annotations and (
-            "B" in annotations or "B" in name
+        elif "daughter centriole" in annotations and (
+            "b" in annotations or "b" in name
         ):
             assert daughter_id is None
             daughter_id = object_id
@@ -180,13 +186,13 @@ def get_distance_b(cell_objects, cell):
         return np.nan
 
     mother_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
     ).json()
     daughter_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{daughter_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{daughter_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -203,7 +209,7 @@ def get_distance_b(cell_objects, cell):
 def get_depth_b(cell_objects, cell):
     mother_id = None
     for (object_id, annotations, name) in cell_objects:
-        if "Mother Centriole" in annotations and ("B" in annotations or "B" in name):
+        if "mother centriole" in annotations and ("b" in annotations or "b" in name):
             assert mother_id is None
             mother_id = object_id
 
@@ -211,7 +217,7 @@ def get_depth_b(cell_objects, cell):
         return np.nan
 
     mother_skeleton = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -225,13 +231,13 @@ def get_distance_ab(cell_objects, cell):
     mother_id_a = None
     mother_id_b = None
     for (object_id, annotations, name) in cell_objects:
-        if "Mother Centriole" in annotations and ("B" in annotations or "B" in name):
+        if "mother centriole" in annotations and ("b" in annotations or "b" in name):
             assert mother_id_b is None
             mother_id_b = object_id
         elif (
-            "Mother Centriole" in annotations
-            and "B" not in annotations
-            and "B" not in name
+            "mother centriole" in annotations
+            and "b" not in annotations
+            and "b" not in name
         ):
             assert mother_id_a is None
             mother_id_a = object_id
@@ -240,13 +246,13 @@ def get_distance_ab(cell_objects, cell):
         return np.nan
 
     mother_skeleton_a = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id_a}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id_a}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
     ).json()
     mother_skeleton_b = requests.post(
-        f"https://jls.janelia.org/catmaid/49/{mother_id_b}/0/1/compact-skeleton",
+        f"{CATMAID_URL}/{PROJECT_ID}/{mother_id_b}/0/1/compact-skeleton",
         verify=False,
         auth=AUTH_TOKEN,
         data="",
@@ -264,7 +270,7 @@ def get_cilia_length(cell_objects, cell):
         if "cilium" in annotations:
             assert cilia_length == 0
             skeleton = requests.post(
-                f"https://jls.janelia.org/catmaid/49/{object_id}/0/1/compact-skeleton",
+                f"{CATMAID_URL}/{PROJECT_ID}/{object_id}/0/1/compact-skeleton",
                 verify=False,
                 auth=AUTH_TOKEN,
                 data="",
@@ -320,17 +326,17 @@ def get_cilium(cell_objects, cell):
 
 
 def get_cell_type(cell_objects, cell):
-    cell_type = "Unsure"
+    cell_type = "unsure"
     for (object_id, annotations, name) in cell_objects:
-        if "Granule Cell" in annotations:
-            assert cell_type == "Unsure" or cell_type == "Granule Cell", cell_type
-            cell_type = "Granule Cell"
-        elif "Bergmann glia" in annotations:
-            assert cell_type == "Unsure" or cell_type == "Bergmann glia", cell_type
-            cell_type = "Bergmann glia"
-        elif "Purkinge Cell" in annotations:
-            assert cell_type == "Unsure" or cell_type == "Purkinge Cell", cell_type
-            cell_type = "Purkinge Cell"
+        if "granule cell" in annotations:
+            assert cell_type == "unsure" or cell_type == "granule cell", cell_type
+            cell_type = "granule cell"
+        elif "bergmann glia" in annotations:
+            assert cell_type == "unsure" or cell_type == "bergmann glia", cell_type
+            cell_type = "bergmann glia"
+        elif "purkinge cell" in annotations:
+            assert cell_type == "unsure" or cell_type == "purkinge cell", cell_type
+            cell_type = "purkinge cell"
 
     return cell_type
 
@@ -338,18 +344,18 @@ def get_cell_type(cell_objects, cell):
 def get_location(cell_objects, cell):
     location = None
     for (object_id, annotations, name) in cell_objects:
-        if "ML" in annotations:
-            assert location is None or location == "ML"
-            location = "ML"
-        elif "EGL" in annotations:
-            assert location is None or location == "EGL"
-            location = "EGL"
-        elif "IGL" in annotations:
-            assert location is None or location == "IGL"
-            location = "IGL"
-        elif "PCL" in annotations:
-            assert location is None or location == "PCL"
-            location = "PCL"
+        if "ml" in annotations:
+            assert location is None or location == "ml"
+            location = "ml"
+        elif "egL" in annotations:
+            assert location is None or location == "egl"
+            location = "egl"
+        elif "igl" in annotations:
+            assert location is None or location == "igl"
+            location = "igl"
+        elif "pcl" in annotations:
+            assert location is None or location == "pcl"
+            location = "pcl"
 
     return location
 
@@ -361,9 +367,9 @@ def get_cell_cycle(cell_objects, cell):
         if "mitotic" in annotations:
             assert cell_stage is False or cell_stage == "mitotic", cell_stage
             cell_stage = "mitotic"
-        elif "S/G2" in annotations:
-            assert cell_stage is False or cell_stage == "S/G2", cell_stage
-            cell_stage = "S/G2"
+        elif "s/g2" in annotations:
+            assert cell_stage is False or cell_stage == "s/g2", cell_stage
+            cell_stage = "s/g2"
 
         if "prophase" in annotations:
             assert cell_cycle is False or cell_cycle == "prophase"

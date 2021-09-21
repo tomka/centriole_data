@@ -5,7 +5,7 @@ import collections
 
 from tqdm import tqdm
 
-from api_requests import AUTH_TOKEN
+from api_requests import AUTH_TOKEN, CATMAID_URL, PROJECT_ID
 
 from cell_stats import (
     get_cell,
@@ -46,7 +46,7 @@ all_annotations = set()
 
 
 neurons_with_annotations = requests.post(
-    "https://jls.janelia.org/catmaid/49/annotations/query-targets",
+    f"{CATMAID_URL}/{PROJECT_ID}/annotations/query-targets",
     verify=False,
     auth=AUTH_TOKEN,
     headers={"content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -65,7 +65,9 @@ for neuron in tqdm(neurons_with_annotations, desc="Getting cells: "):
     object_id = neuron["skeleton_ids"]
     assert len(object_id) == 1
     object_id = object_id[0]
-    annotation_list = [annotation["name"] for annotation in neuron["annotations"]]
+    # For robustness we don't care about the case of the annoation and convert
+    # everything to lower case.
+    annotation_list = [annotation["name"].lower() for annotation in neuron["annotations"]]
     annotations = set()
     cell_num = None
     for annotation in annotation_list:
