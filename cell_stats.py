@@ -349,22 +349,22 @@ def get_location(cell_objects, cell):
         if "ml" in annotations:
             assert (
                 location is None or location == "ml"
-            ), f"ml in cell annotations, but already found {location}"
+            ), f"ml in cell annotations, but already found {location} for object {object_id}, cell {cell}"
             location = "ml"
         elif "egL" in annotations:
             assert (
                 location is None or location == "egl"
-            ), f"egl in cell annotations, but already found {location}"
+            ), f"egl in cell annotations, but already found {location} for object {object_id}, cell {cell}"
             location = "egl"
         elif "igl" in annotations:
             assert (
                 location is None or location == "igl"
-            ), f"igl in cell annotations, but already found {location}"
+            ), f"igl in cell annotations, but already found {location} for object {object_id}, cell {cell}"
             location = "igl"
         elif "pcl" in annotations:
             assert (
                 location is None or location == "pcl"
-            ), f"pcl in cell annotations, but already found {location}"
+            ), f"pcl in cell annotations, but already found {location} for object {object_id}, cell {cell}"
             location = "pcl"
 
     return location
