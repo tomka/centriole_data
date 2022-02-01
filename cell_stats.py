@@ -168,11 +168,13 @@ def get_distance_b(cell_objects, cell):
     mother_id = None
     daughter_id = None
     for (object_id, annotations, name) in cell_objects:
-        if "mother centriole" in annotations and ("b" in annotations or "b" in name):
-            assert mother_id is None
+        if "mother centriole" in annotations and ("b" in annotations or " b " in name):
+            assert (
+                mother_id is None
+            ), f"Found mother centriole b with id: {object_id}, but previously found with id: {mother_id}.\nObjects in cell: {cell_objects}"
             mother_id = object_id
         elif "daughter centriole" in annotations and (
-            "b" in annotations or "b" in name
+            "b" in annotations or " b " in name
         ):
             assert daughter_id is None
             daughter_id = object_id
@@ -209,7 +211,7 @@ def get_distance_b(cell_objects, cell):
 def get_depth_b(cell_objects, cell):
     mother_id = None
     for (object_id, annotations, name) in cell_objects:
-        if "mother centriole" in annotations and ("b" in annotations or "b" in name):
+        if "mother centriole" in annotations and ("b" in annotations or " b " in name):
             assert mother_id is None
             mother_id = object_id
 
@@ -231,7 +233,7 @@ def get_distance_ab(cell_objects, cell):
     mother_id_a = None
     mother_id_b = None
     for (object_id, annotations, name) in cell_objects:
-        if "mother centriole" in annotations and ("b" in annotations or "b" in name):
+        if "mother centriole" in annotations and ("b" in annotations or " b " in name):
             assert mother_id_b is None
             mother_id_b = object_id
         elif (
@@ -345,16 +347,24 @@ def get_location(cell_objects, cell):
     location = None
     for (object_id, annotations, name) in cell_objects:
         if "ml" in annotations:
-            assert location is None or location == "ml"
+            assert (
+                location is None or location == "ml"
+            ), f"ml in cell annotations, but already found {location}"
             location = "ml"
         elif "egL" in annotations:
-            assert location is None or location == "egl"
+            assert (
+                location is None or location == "egl"
+            ), f"egl in cell annotations, but already found {location}"
             location = "egl"
         elif "igl" in annotations:
-            assert location is None or location == "igl"
+            assert (
+                location is None or location == "igl"
+            ), f"igl in cell annotations, but already found {location}"
             location = "igl"
         elif "pcl" in annotations:
-            assert location is None or location == "pcl"
+            assert (
+                location is None or location == "pcl"
+            ), f"pcl in cell annotations, but already found {location}"
             location = "pcl"
 
     return location
