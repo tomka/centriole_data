@@ -61,7 +61,7 @@ neurons_with_annotations = neurons_with_annotations.json()["entities"]
 cells = collections.defaultdict(list)
 
 for neuron in tqdm(neurons_with_annotations, desc="Getting cells: "):
-    name = neuron["name"]
+    name = neuron["name"].lower()
     object_id = neuron["skeleton_ids"]
     assert len(object_id) == 1
     object_id = object_id[0]
