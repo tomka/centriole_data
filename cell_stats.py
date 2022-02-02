@@ -12,46 +12,51 @@ logger = logging.getLogger(__name__)
 warnings.filterwarnings("ignore")
 
 # Store a *lower case* version of all annotations
-all_annotations = list(map(lambda a: a.lower(), [
-    # locations
-    "ML",
-    "PCL",
-    "EGL",
-    "EGL boundary",
-    "IGL",
-    # cilium
-    "pocket cilium",
-    "concealed cilium",
-    "incomplete cilium",
-    "pre-ciliary structure",
-    "surface cilium",
-    "cilium",
-    # cell type
-    "Bergmann glia",
-    "unsure cell type",
-    "Granule Cell",
-    "Purkinge Cell",
-    # cell cycle
-    "mitotic",
-    "metaphase/anaphase",
-    "telophase",
-    "cytokinesis",
-    "prophase",
-    "prometaphase",
-    "S/G2",
-    # migrating
-    "migrating",
-    # centriole
-    "docked centriole",
-    "duplicating centriole",
-    "Mother Centriole",
-    "Daughter Centriole",
-    "centriole",
-    "tethered centriole",
-    # other
-    "bipolar",
-    "midbody",
-]))
+all_annotations = list(
+    map(
+        lambda a: a.lower(),
+        [
+            # locations
+            "ML",
+            "PCL",
+            "EGL",
+            "EGL boundary",
+            "IGL",
+            # cilium
+            "pocket cilium",
+            "concealed cilium",
+            "incomplete cilium",
+            "pre-ciliary structure",
+            "surface cilium",
+            "cilium",
+            # cell type
+            "Bergmann glia",
+            "unsure cell type",
+            "Granule Cell",
+            "Purkinge Cell",
+            # cell cycle
+            "mitotic",
+            "metaphase/anaphase",
+            "telophase",
+            "cytokinesis",
+            "prophase",
+            "prometaphase",
+            "S/G2",
+            # migrating
+            "migrating",
+            # centriole
+            "docked centriole",
+            "duplicating centriole",
+            "Mother Centriole",
+            "Daughter Centriole",
+            "centriole",
+            "tethered centriole",
+            # other
+            "bipolar",
+            "midbody",
+        ],
+    )
+)
 
 
 def normann(a):
@@ -270,7 +275,9 @@ def get_cilia_length(cell_objects, cell):
     cilia_length = 0
     for (object_id, annotations, name) in cell_objects:
         if "cilium" in annotations:
-            assert cilia_length == 0
+            assert (
+                cilia_length == 0
+            ), f"A second cilia was found for cell {cell}\nCell objects: {cell_objects}"
             skeleton = requests.post(
                 f"{CATMAID_URL}/{PROJECT_ID}/{object_id}/0/1/compact-skeleton",
                 verify=False,
@@ -347,24 +354,28 @@ def get_location(cell_objects, cell):
     location = None
     for (object_id, annotations, name) in cell_objects:
         if "ml" in annotations:
-            assert (
-                location is None or location == "ml"
-            ), f"ml in cell annotations, but already found {location} for object {object_id}, cell {cell}"
+            assert location is None or location == "ml", (
+                f"ml in cell annotations, but already found {location} for object {object_id}, cell {cell}\n"
+                f"objects: {cell_objects}"
+            )
             location = "ml"
         elif "egL" in annotations:
-            assert (
-                location is None or location == "egl"
-            ), f"egl in cell annotations, but already found {location} for object {object_id}, cell {cell}"
+            assert location is None or location == "egl", (
+                f"egl in cell annotations, but already found {location} for object {object_id}, cell {cell}\n"
+                f"objects: {cell_objects}"
+            )
             location = "egl"
         elif "igl" in annotations:
-            assert (
-                location is None or location == "igl"
-            ), f"igl in cell annotations, but already found {location} for object {object_id}, cell {cell}"
+            assert location is None or location == "igl", (
+                f"igl in cell annotations, but already found {location} for object {object_id}, cell {cell}\n"
+                f"objects: {cell_objects}"
+            )
             location = "igl"
         elif "pcl" in annotations:
-            assert (
-                location is None or location == "pcl"
-            ), f"pcl in cell annotations, but already found {location} for object {object_id}, cell {cell}"
+            assert location is None or location == "pcl", (
+                f"pcl in cell annotations, but already found {location} for object {object_id}, cell {cell}\n"
+                f"objects: {cell_objects}"
+            )
             location = "pcl"
 
     return location
