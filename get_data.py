@@ -21,6 +21,7 @@ from cell_stats import (
     get_cell_type,
     get_location,
     get_cell_cycle,
+    get_cell_stage,
     get_migrating,
 )
 
@@ -38,6 +39,7 @@ columns = {
     "Cell type": get_cell_type,
     "Location": get_location,
     "Cell Cycle": get_cell_cycle,
+    "Cell Stage": get_cell_stage,
     "migrating": get_migrating,
 }
 columns = [(k, v) for k, v in columns.items()]

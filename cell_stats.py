@@ -71,7 +71,9 @@ def get_cell(cell_objects, cell):
 def get_basal_body(cell_objects, cell):
     basal_body = False
     for (object_id, annotations, name) in cell_objects:
-        basal_body = basal_body or ("basal body" in annotations)
+        basal_body = (
+            basal_body or ("basal body" in annotations) or ("basal body" in name)
+        )
     return basal_body
 
 
@@ -82,14 +84,14 @@ def get_distance_a(cell_objects, cell):
         if (
             "mother centriole" in annotations
             and "b" not in annotations
-            and "b" not in name
+            and " b " not in name
         ):
             assert mother_id is None
             mother_id = object_id
         elif (
             "daughter centriole" in annotations
             and "b" not in annotations
-            and "b" not in name
+            and " b " not in name
         ):
             assert (
                 daughter_id is None
@@ -149,7 +151,7 @@ def get_depth_a(cell_objects, cell):
         if (
             "mother centriole" in annotations
             and "b" not in annotations
-            and "b" not in name
+            and " b " not in name
         ):
             assert mother_id is None
             mother_id = object_id
@@ -359,7 +361,13 @@ def get_location(cell_objects, cell):
                 f"objects: {cell_objects}"
             )
             location = "ml"
-        elif "egL" in annotations:
+        elif "egl boundary" in annotations:
+            assert location is None or location == "egl boundary", (
+                f"egl boundary in cell annotations, but already found {location} for object {object_id}, cell {cell}\n"
+                f"objects: {cell_objects}"
+            )
+            location = "egl boundary"
+        elif "egl" in annotations:
             assert location is None or location == "egl", (
                 f"egl in cell annotations, but already found {location} for object {object_id}, cell {cell}\n"
                 f"objects: {cell_objects}"
@@ -383,14 +391,7 @@ def get_location(cell_objects, cell):
 
 def get_cell_cycle(cell_objects, cell):
     cell_cycle = False
-    cell_stage = False
     for (object_id, annotations, name) in cell_objects:
-        if "mitotic" in annotations:
-            assert cell_stage is False or cell_stage == "mitotic", cell_stage
-            cell_stage = "mitotic"
-        elif "s/g2" in annotations:
-            assert cell_stage is False or cell_stage == "s/g2", cell_stage
-            cell_stage = "s/g2"
 
         if "prophase" in annotations:
             assert cell_cycle is False or cell_cycle == "prophase"
@@ -409,6 +410,17 @@ def get_cell_cycle(cell_objects, cell):
             cell_cycle = "cytokinesis"
 
     return cell_cycle
+
+def get_cell_stage(cell_objects, cell):
+    cell_stage = False
+    for (object_id, annotations, name) in cell_objects:
+        if "mitotic" in annotations:
+            assert cell_stage is False or cell_stage == "mitotic", cell_stage
+            cell_stage = "mitotic"
+        elif "s/g2" in annotations:
+            assert cell_stage is False or cell_stage == "s/g2", cell_stage
+            cell_stage = "s/g2"
+    return cell_stage
 
 
 def get_migrating(cell_objects, cell):
