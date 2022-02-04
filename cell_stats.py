@@ -430,3 +430,11 @@ def get_migrating(cell_objects, cell):
             migrating = True
 
     return migrating
+
+def get_ciliary_vesicle(cell_objects, cell):
+    vesicle = False
+    for (object_id, annotations, name) in cell_objects:
+        if "ciliary vesicle" in annotations:
+            vesicle = True
+
+    return vesicle

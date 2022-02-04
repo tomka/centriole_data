@@ -23,6 +23,7 @@ from cell_stats import (
     get_cell_cycle,
     get_cell_stage,
     get_migrating,
+    get_ciliary_vesicle
 )
 
 columns = {
@@ -41,6 +42,7 @@ columns = {
     "Cell Cycle": get_cell_cycle,
     "Cell Stage": get_cell_stage,
     "migrating": get_migrating,
+    "Ciliary Vesicle": get_ciliary_vesicle,
 }
 columns = [(k, v) for k, v in columns.items()]
 
