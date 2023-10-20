@@ -10,8 +10,14 @@ from api_requests import AUTH_TOKEN, CATMAID_URL, PROJECT_ID
 
 import numpy as np
 
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("-m", "--mother-centrioles", help="output mother centriole coordinates",
+                    action="store_true")
+args = parser.parse_args()
 
-def get_vector_coords(object_id):
+
+def get_vector_coords(object_id, only_roots=False):
     centriole_vector = requests.post(
         f"{CATMAID_URL}/{PROJECT_ID}/{object_id}/0/1/compact-skeleton",
         verify=False,
@@ -19,6 +25,10 @@ def get_vector_coords(object_id):
         data="",
     ).json()
     ends = centriole_vector[0]
+    if only_roots and len(ends) < 2:
+        a_loc = np.array(ends[0][3:6])
+        x, y, z = a_loc
+        return x, y, z, None, None, None
     assert len(ends) == 2
     a_loc = np.array(ends[0][3:6])
     b_loc = np.array(ends[1][3:6])
@@ -44,11 +54,13 @@ neurons_with_annotations = requests.post(
 
 neurons_with_annotations = neurons_with_annotations.json()["entities"]
 
+test_annotation = "mother centriole" if args.mother_centrioles else "centriole vector line"
+
 vectors = [
     skeleton
     for skeleton in neurons_with_annotations
-    if "centriole vector line"
-    in list(annotation["name"] for annotation in skeleton["annotations"])
+    if test_annotation
+    in list(annotation["name"].lower() for annotation in skeleton["annotations"])
 ]
 
 
@@ -85,8 +97,12 @@ for vector in tqdm(vectors, desc="Getting cells: "):
 
 rows = []
 for cell_num, object_id in tqdm(cells, desc="Fetching cell stats: "):
-    x, y, z, theta, phi, r = get_vector_coords(object_id)
-    rows.append((cell_num, x, y, z, theta, phi, r))
+    x, y, z, theta, phi, r = get_vector_coords(object_id, args.mother_centrioles)
+    if args.mother_centrioles:
+        rows.append((cell_num, x, y, z))
+    else:
+        rows.append((cell_num, x, y, z, theta, phi, r))
 
-with open("centriole_vectors.txt", "w") as f:
+outputname = "mother_centriole_vectors.txt" if args.mother_centrioles else "centriole_vectors.txt"
+with open(outputname, "w") as f:
     f.write("\n".join([",".join([str(x) for x in row]) for row in rows]))
